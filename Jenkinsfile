@@ -9,6 +9,9 @@ pipeline {
         stage('Setup SSH tunnel') {
             steps {
                 script {
+
+                    sh "whoami"
+
                     /* groovylint-disable-next-line LineLength */
                     sh "ssh -nNT -L \$(pwd)/docker.sock:/var/run/docker.sock ${STAGE_INSTANCE} & echo \$! > /tmp/tunnel.pid"
                     sleep 5
