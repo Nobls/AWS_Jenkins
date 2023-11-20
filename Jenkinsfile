@@ -19,7 +19,7 @@ pipeline {
             steps {
                 script {
                     echo "${DOCKER_HOST}"
-                    sh "ls -la /var/lib/jenkins/workspace/AWS/"
+                    sh "ls -la /var/lib/jenkins/workspace/Staging/"
                     sh "DOCKER_HOST=${DOCKER_HOST} docker ps -a"
                     sh "echo 111"
                 }
@@ -29,7 +29,7 @@ pipeline {
     post {
         always {
             script {
-                sh "rm /var/lib/jenkins/workspace/AWS/docker.sock"
+                sh "rm /var/lib/jenkins/workspace/Staging/docker.sock"
                 sh "pkill -F /tmp/tunnel.pid" & "rm /tmp/tunnel.pid"
             }
         }
