@@ -2,8 +2,7 @@
 pipeline {
     agent any
     environment {
-        env.DOCKER_HOST = "unix:/\$(pwd)/docker.sock"
-        /* DOCKER_HOST = "unix:/\$(pwd)/docker.sock" */
+        DOCKER_HOST = "unix:/\$(pwd)/docker.sock"
         STAGE_INSTANCE = 'ubuntu@16.171.170.50'
     }
     stages {
