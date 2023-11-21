@@ -43,7 +43,7 @@ pipeline {
                /*  sh 'pkill -F /tmp/tunnel.pid' & 'rm /tmp/tunnel.pid' */
 
                 withCredentials([sshUserPrivateKey(credentialsId: 'your-ssh-credentials-id', keyFileVariable: 'SSH_KEY')]) {
-                    sh 'rm /var/lib/jenkins/workspace/AWS/docker.sock'
+                    sh 'rm /var/lib/jenkins/workspace/Staging/docker.sock'
                     sh 'pkill -F /tmp/tunnel.pid' // Внимание: 'rm /tmp/tunnel.pid' было удалено, так как у вас в коде используется & между командами
                 }
             }
