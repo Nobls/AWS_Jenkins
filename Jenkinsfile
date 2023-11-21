@@ -2,7 +2,8 @@
 pipeline {
     agent any
     environment {
-        DOCKER_HOST = "unix:/\$(pwd)/docker.sock"
+        env.DOCKER_HOST = "unix:/\$(pwd)/docker.sock"
+        /* DOCKER_HOST = "unix:/\$(pwd)/docker.sock" */
         STAGE_INSTANCE = 'ubuntu@16.171.170.50'
     }
     stages {
@@ -19,9 +20,9 @@ pipeline {
             steps {
                 script {
                     echo "${DOCKER_HOST}"
-                    sh "ls -la /var/lib/jenkins/workspace/Staging/"
+                    sh 'ls -la /var/lib/jenkins/workspace/Staging/'
                     sh "DOCKER_HOST=${DOCKER_HOST} docker ps -a"
-                    sh "echo 111"
+                    sh 'echo 111'
                 }
             }
         }
@@ -29,8 +30,9 @@ pipeline {
     post {
         always {
             script {
-                sh "rm /var/lib/jenkins/workspace/Staging/docker.sock"
-                sh "pkill -F /tmp/tunnel.pid" & "rm /tmp/tunnel.pid"
+                sh 'rm /var/lib/jenkins/workspace/Staging/docker.sock'
+                sh 'pkill -F /tmp/tunnel.pid'
+                sh 'rm /tmp/tunnel.pid'
             }
         }
     }
