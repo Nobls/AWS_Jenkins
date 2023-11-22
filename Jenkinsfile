@@ -1,3 +1,4 @@
+/* groovylint-disable-next-line CompileStatic */
 pipeline {
     agent any
     environment {
@@ -15,51 +16,25 @@ pipeline {
                     /* sh 'cat /tmp/tunnel.pid' */
                     /* sleep 15 */
 
-                    // Проверим наличие и завершим предыдущий туннель, если он существует
-                    /* catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                        sh 'pkill -F /tmp/tunnel.pid'
-                    } */
+                    /* groovylint-disable-next-line LineLength */
+                    sh "ssh -i /var/lib/jenkins/id_rsa -o StrictHostKeyChecking=no -nNT -L \$(pwd)/docker.sock:/var/run/docker.sock ubuntu@13.51.146.196 & echo \$! > /tmp/tunnel.pid"
 
-                    withCredentials([sshUserPrivateKey(credentialsId: '022e60cf-c9a9-4c05-a898-7055d1f4fa25', keyFileVariable: 'SSH_KEY')]) {
-                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                            def processIdentifier = "ssh -i ${SSH_KEY} -nNT -L \$(pwd)/docker.sock:/var/run/docker.sock ${STAGE_INSTANCE}"
-                            sh "pkill -f '${processIdentifier}' || true"
-                        }
-                    }
-
-                    // Ожидаем, чтобы дать процессу время на завершение (если необходимо)
-                    sleep time: 5, unit: 'SECONDS'
-
-                    withCredentials([sshUserPrivateKey(credentialsId: '022e60cf-c9a9-4c05-a898-7055d1f4fa25', keyFileVariable: 'SSH_KEY')]) {
-                        sh 'whoami'
-                        // Используйте переменную секретного ключа в команде ssh
-                        sh "ssh -i ${SSH_KEY} -nNT -L \$(pwd)/docker.sock:/var/run/docker.sock ${STAGE_INSTANCE} & echo \$! > /tmp/tunnel.pid"
-                        // Добавим паузу, если это необходимо
-                        sleep 15
+                    sleep 5
+                }
+            }
+            stage('Deploy') {
+                steps {
+                    /* groovylint-disable-next-line NestedBlockDepth */
+                    script {
+                        sh "DOCKER_HOST=${DOCKER_HOST} docker ps -a"
                     }
                 }
             }
         }
-        stage('Deploy') {
-            steps {
+        post {
+            always {
                 script {
-                    echo "${DOCKER_HOST}"
-                    sh 'ls -la /var/lib/jenkins/workspace/Staging/'
-                    sh "DOCKER_HOST=${DOCKER_HOST} docker ps -a"
-                    sh 'echo 111'
-                }
-            }
-        }
-    }
-    post {
-        always {
-            script {
-               /*  sh 'rm /var/lib/jenkins/workspace/AWS/docker.sock' */
-               /*  sh 'pkill -F /tmp/tunnel.pid' & 'rm /tmp/tunnel.pid' */
-
-                withCredentials([sshUserPrivateKey(credentialsId: 'your-ssh-credentials-id', keyFileVariable: 'SSH_KEY')]) {
-                    sh 'rm /var/lib/jenkins/workspace/Staging/docker.sock'
-                    sh 'pkill -F /tmp/tunnel.pid' // Внимание: 'rm /tmp/tunnel.pid' было удалено, так как у вас в коде используется & между командами
+                    sh 'pkill -F /tmp/tunnel.pid & rm /var/lib/jenkins/workspace/Staging/docker.sock'
                 }
             }
         }
