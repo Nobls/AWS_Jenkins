@@ -20,8 +20,10 @@ pipeline {
                         sh 'pkill -F /tmp/tunnel.pid'
                     } */
 
-                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                        sh "pkill -f 'ssh -i ${SSH_KEY} -nNT -L \$(pwd)/docker.sock:/var/run/docker.sock ${STAGE_INSTANCE}'"
+                    withCredentials([sshUserPrivateKey(credentialsId: '022e60cf-c9a9-4c05-a898-7055d1f4fa25', keyFileVariable: 'SSH_KEY')]) {
+                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                            sh "pkill -f 'ssh -i ${SSH_KEY} -nNT -L \$(pwd)/docker.sock:/var/run/docker.sock ${STAGE_INSTANCE}'"
+                        }
                     }
 
                     // Ожидаем, чтобы дать процессу время на завершение (если необходимо)
