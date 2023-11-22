@@ -16,8 +16,12 @@ pipeline {
                     /* sleep 15 */
 
                     // Проверим наличие и завершим предыдущий туннель, если он существует
-                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    /* catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                         sh 'pkill -F /tmp/tunnel.pid'
+                    } */
+
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        sh "pkill -f 'ssh -i ${SSH_KEY} -nNT -L \$(pwd)/docker.sock:/var/run/docker.sock ${STAGE_INSTANCE}'"
                     }
 
                     // Ожидаем, чтобы дать процессу время на завершение (если необходимо)
