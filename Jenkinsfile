@@ -17,7 +17,7 @@ pipeline {
 
                     // Проверим наличие и завершим предыдущий туннель, если он существует
                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                        sh "kill \$(cat /tmp/tunnel.pid)"
+                        sh 'pkill -F /tmp/tunnel.pid'
                     }
 
                     // Ожидаем, чтобы дать процессу время на завершение (если необходимо)
