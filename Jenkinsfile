@@ -24,7 +24,7 @@ pipeline {
     post {
         always {
             script {
-                sh 'pkill -F /tmp/tunnel.pid & rm /var/lib/jenkins/workspace/Staging/docker.sock'
+                sh 'pkill -F /tmp/tunnel.pid'
             }
         }
     }
