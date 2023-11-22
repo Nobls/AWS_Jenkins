@@ -15,6 +15,14 @@ pipeline {
                     /* sh 'cat /tmp/tunnel.pid' */
                     /* sleep 15 */
 
+                    // Проверим наличие и завершим предыдущий туннель, если он существует
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        sh "kill \$(cat /tmp/tunnel.pid)"
+                    }
+
+                    // Ожидаем, чтобы дать процессу время на завершение (если необходимо)
+                    sleep time: 5, unit: 'SECONDS'
+
                     withCredentials([sshUserPrivateKey(credentialsId: '022e60cf-c9a9-4c05-a898-7055d1f4fa25', keyFileVariable: 'SSH_KEY')]) {
                         sh 'whoami'
                         // Используйте переменную секретного ключа в команде ssh
