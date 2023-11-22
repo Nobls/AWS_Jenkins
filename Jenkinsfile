@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_HOST = "unix://\$(pwd)/docker.sock"
+        /* DOCKER_HOST = "unix://\$(pwd)/docker.sock" */
         STAGE_INSTANCE = 'ubuntu@51.20.252.66'
     }
     stages {
@@ -18,7 +18,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    sh "DOCKER_HOST=${DOCKER_HOST} docker ps -a"
+                    sh 'DOCKER_HOST=unix://\$(pwd)/docker.sock docker ps -a'
                 }
             }
         }
