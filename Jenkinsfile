@@ -9,7 +9,7 @@ pipeline {
             steps {
                 script {
                     /* groovylint-disable-next-line LineLength */
-                    sh "ssh -i /var/lib/jenkins/.ssh/id_rsa -o StrictHostKeyChecking=no -nNT -L \$(pwd)/docker.sock:/var/run/docker.sock ${STAGE_INSTANCE} & echo \$! > /tmp/tunnel.pid"
+                    sh "ssh -i /var/lib/jenkins/id_rsa -o StrictHostKeyChecking=no -nNT -L \$(pwd)/docker.sock:/var/run/docker.sock ${STAGE_INSTANCE} & echo \$! > /tmp/tunnel.pid"
 
                     sleep 10
                 }
